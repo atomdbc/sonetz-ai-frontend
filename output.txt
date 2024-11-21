@@ -1,0 +1,100 @@
+.
+├── README.md
+├── components.json
+├── next-env.d.ts
+├── next.config.js
+├── next.config.ts
+├── output.txt
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+│   ├── aira_avatar.webp
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── user_avatar.webp
+│   ├── vercel.svg
+│   └── window.svg
+├── src
+│   ├── app
+│   │   ├── auth
+│   │   │   ├── signin
+│   │   │   │   └── page.tsx
+│   │   │   └── signup
+│   │   │       └── page.tsx
+│   │   ├── chat
+│   │   │   ├── [threadId]
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── output.txt
+│   │   │   └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── fonts
+│   │   │   ├── GeistMonoVF.woff
+│   │   │   └── GeistVF.woff
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components
+│   │   ├── auth
+│   │   │   └── ProtectedRoute.tsx
+│   │   ├── chat
+│   │   │   ├── ChatArea.tsx
+│   │   │   ├── ChatInput.tsx
+│   │   │   ├── ChatLayout.tsx
+│   │   │   ├── MessageList.tsx
+│   │   │   ├── ShareThread.tsx
+│   │   │   ├── ThreadHeader.tsx
+│   │   │   ├── ThreadItem.tsx
+│   │   │   ├── ThreadsList.tsx
+│   │   │   └── WelcomeScreen.tsx
+│   │   └── ui
+│   │       ├── alert.tsx
+│   │       ├── avatar.tsx
+│   │       ├── badge.tsx
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── dialog.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── form.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── markdown.tsx
+│   │       ├── scroll-area.tsx
+│   │       ├── select.tsx
+│   │       ├── sheet.tsx
+│   │       ├── skeleton.tsx
+│   │       ├── tabs.tsx
+│   │       ├── textarea.tsx
+│   │       ├── toast.tsx
+│   │       ├── toaster.tsx
+│   │       └── tooltip.tsx
+│   ├── hooks
+│   │   ├── use-thread.ts
+│   │   ├── use-toast.ts
+│   │   ├── use-websocket.ts
+│   │   └── useMediaQuery.ts
+│   ├── lib
+│   │   ├── api
+│   │   │   └── apiClient.ts
+│   │   ├── auth
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   ├── authContext.tsx
+│   │   │   └── tokenService.ts
+│   │   ├── chat
+│   │   │   └── ChatContext.tsx
+│   │   └── utils.ts
+│   ├── providers
+│   │   └── theme-provider.tsx
+│   ├── services
+│   │   ├── authService.ts
+│   │   └── chatService.ts
+│   └── types
+│       ├── auth.ts
+│       ├── message.ts
+│       └── thread.ts
+├── tailwind.config.ts
+└── tsconfig.json
+
+22 directories, 76 files

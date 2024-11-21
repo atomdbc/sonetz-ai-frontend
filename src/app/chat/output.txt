@@ -1,0 +1,7 @@
+.
+├── [threadId]
+│   └── page.tsx
+├── output.txt
+└── page.tsx
+
+2 directories, 3 files
