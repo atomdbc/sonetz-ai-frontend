@@ -7,7 +7,11 @@ import { useChat } from '@/lib/chat/ChatContext';
 import { useAuth } from '@/lib/auth/authContext';
 import { useToast } from '@/hooks/use-toast';
 
-export function SharePageContent({ threadId }: { threadId: string }) {
+interface SharePageContentProps {
+  threadId: string;
+}
+
+export function SharePageContent({ threadId }: SharePageContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -28,7 +32,8 @@ export function SharePageContent({ threadId }: { threadId: string }) {
           return;
         }
 
-        const shareId = searchParams?.get('share_id');
+        // Convert null to undefined for getThreadAccess
+        const shareId = searchParams?.get('share_id') || undefined;
         await getThreadAccess(threadId, shareId);
         router.push(`/chat/${threadId}`);
       } catch (error) {

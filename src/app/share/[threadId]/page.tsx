@@ -4,11 +4,13 @@
 import { ChatProvider } from '@/lib/chat/ChatContext';
 import { SharePageContent } from '@/components/chat/SharePageContent';
 
-export default function SharePage({ 
-  params 
-}: { 
-  params: { threadId: string } 
-}) {
+interface SharePageProps {
+  params: {
+    threadId: string;
+  };
+}
+
+export default function SharePage({ params }: SharePageProps) {
   return (
     <ChatProvider>
       <SharePageContent threadId={params.threadId} />
