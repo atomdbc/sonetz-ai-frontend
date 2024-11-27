@@ -3,21 +3,30 @@
 ├── components.json
 ├── next-env.d.ts
 ├── next.config.js
-├── next.config.ts
 ├── output.txt
 ├── package-lock.json
 ├── package.json
-├── postcss.config.mjs
+├── postcss.config.js
 ├── public
 │   ├── aira_avatar.webp
 │   ├── file.svg
 │   ├── globe.svg
+│   ├── integrations
+│   │   ├── hubspot.png
+│   │   └── salesforce.png
 │   ├── next.svg
 │   ├── user_avatar.webp
 │   ├── vercel.svg
 │   └── window.svg
 ├── src
 │   ├── app
+│   │   ├── api
+│   │   │   ├── external
+│   │   │   └── integrations
+│   │   │       ├── auth
+│   │   │       │   └── route.ts
+│   │   │       └── callback
+│   │   │           └── route.ts
 │   │   ├── auth
 │   │   │   ├── signin
 │   │   │   │   └── page.tsx
@@ -34,8 +43,14 @@
 │   │   │   ├── GeistMonoVF.woff
 │   │   │   └── GeistVF.woff
 │   │   ├── globals.css
+│   │   ├── integrations
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
 │   │   ├── layout.tsx
-│   │   └── page.tsx
+│   │   ├── page.tsx
+│   │   └── share
+│   │       └── [threadId]
+│   │           └── page.tsx
 │   ├── components
 │   │   ├── auth
 │   │   │   └── ProtectedRoute.tsx
@@ -49,6 +64,9 @@
 │   │   │   ├── ThreadItem.tsx
 │   │   │   ├── ThreadsList.tsx
 │   │   │   └── WelcomeScreen.tsx
+│   │   ├── integrations
+│   │   │   ├── integration-card.tsx
+│   │   │   └── integrations-data.ts
 │   │   └── ui
 │   │       ├── alert.tsx
 │   │       ├── avatar.tsx
@@ -63,6 +81,7 @@
 │   │       ├── markdown.tsx
 │   │       ├── scroll-area.tsx
 │   │       ├── select.tsx
+│   │       ├── separator.tsx
 │   │       ├── sheet.tsx
 │   │       ├── skeleton.tsx
 │   │       ├── tabs.tsx
@@ -79,22 +98,23 @@
 │   │   ├── api
 │   │   │   └── apiClient.ts
 │   │   ├── auth
-│   │   │   ├── ProtectedRoute.tsx
 │   │   │   ├── authContext.tsx
 │   │   │   └── tokenService.ts
 │   │   ├── chat
 │   │   │   └── ChatContext.tsx
 │   │   └── utils.ts
+│   ├── middleware.ts
 │   ├── providers
 │   │   └── theme-provider.tsx
 │   ├── services
 │   │   ├── authService.ts
-│   │   └── chatService.ts
+│   │   ├── chatService.ts
+│   │   └── integrationService.ts
 │   └── types
 │       ├── auth.ts
 │       ├── message.ts
 │       └── thread.ts
-├── tailwind.config.ts
+├── tailwind.config.js
 └── tsconfig.json
 
-22 directories, 76 files
+32 directories, 86 files

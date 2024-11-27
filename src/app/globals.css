@@ -71,3 +71,13 @@
 .prose :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::after {
   content: "";
 }
+
+.prose table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+.prose table thead {
+  background-color: #f9fafb; /* Optional: Add background color to table headers */
+}

@@ -1,4 +1,3 @@
-// src/lib/auth/authContext.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -52,14 +51,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const user = await authService.getCurrentUser();
         setUser(user);
         setToken(validToken);
+        return true;
       } else {
         setUser(null);
         setToken(null);
+        return false;
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       setUser(null);
       setToken(null);
+      return false;
     } finally {
       setLoading(false);
     }
@@ -76,15 +78,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await authService.signIn({ username: email, password });
-      if (response.status === 'success' && response.data) {
+      // Using your new signin endpoint through authService
+      const response = await authService.signIn({ 
+        email,  // Changed from username to email to match your signin form
+        password 
+      });
+      
+      // Check if the response matches your API's structure
+      if (response.data?.access_token) {
+        // Set the tokens in TokenService
+        TokenService.setTokens(
+          response.data.access_token,
+          response.data.refresh_token
+        );
+        
+        // Update the token in state
         setToken(response.data.access_token);
-        const user = await authService.getCurrentUser();
-        setUser(user);
-        return user;
+        
+        // Fetch the user details
+        const userData = await authService.getCurrentUser();
+        setUser(userData);
+        
+        return userData;
       }
-      throw new Error('Sign in failed');
+      
+      throw new Error('Invalid response from server');
     } catch (error) {
+      console.error('Sign in error:', error);
       throw error;
     }
   };
@@ -93,7 +113,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authService.signOut();
       setUser(null);
-      setToken(null); 
+      setToken(null);
+      
       router.push('/auth/signin');
       toast({
         title: 'Signed out successfully',

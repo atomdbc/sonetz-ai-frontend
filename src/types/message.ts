@@ -3,16 +3,39 @@ export interface Message {
   id: string;
   thread_id: string;
   content: string;
-  role: 'user' | 'agent';
-  type: 'text' | 'image' | 'file';
+  role: 'user' | 'agent' | 'system';
+  type: 'text' | 'action' | 'thought' | 'memory';
+  agent_id?: string;
+  parent_id?: string;
+  message_metadata?: {
+    participant_id?: string;
+    user_role?: 'owner' | 'contributor' | 'viewer';
+    share_id?: string;
+    tokens?: number;
+    [key: string]: any;
+  };
   created_at: string;
   processed_at?: string;
   isStreaming?: boolean;
-  agent_id?: string | null;
-  parent_id?: string | null;
-  message_metadata?: Record<string, any>;
-  tokens?: number | null;
 }
+
+export interface MessageCreate {
+  content: string;
+  role: 'user' | 'agent' | 'system';
+  type: 'text' | 'action' | 'thought' | 'memory';
+  agent_id?: string;
+  parent_id?: string;
+  message_metadata?: Record<string, any>;
+}
+
+export interface MessageResponse extends Message {
+  participant?: {
+    user_id: string;
+    role: 'owner' | 'contributor' | 'viewer';
+    email?: string;
+  };
+}
+
 
 export function cleanMessageContent(content: string): string {
   try {

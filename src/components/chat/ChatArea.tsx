@@ -1,3 +1,5 @@
+// src/components/chat/ChatArea.tsx
+
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -13,16 +15,33 @@ interface ChatAreaProps {
   threadId: string;
 }
 
-function cleanMessageContent(content: string): string {
+function getCleanContent(content: string): string {
+  let cleanedContent = content;
+
   try {
-    // Extract only the Final Answer content as that's what backend sends
-    const finalAnswerMatch = content.match(/Final Answer:(.*?)(?=$)/s);
-    if (finalAnswerMatch) {
-      return finalAnswerMatch[1].trim();
+    // Check if content is a JSON string
+    if (typeof content === 'string' && content.trim().startsWith('{')) {
+      const parsed = JSON.parse(content);
+
+      // Check if parsed object has a 'content' field
+      if (parsed && typeof parsed.content === 'string') {
+        cleanedContent = parsed.content;
+      } else if (parsed && typeof parsed.message === 'string') {
+        cleanedContent = parsed.message;
+      } else {
+        // If 'content' or 'message' field doesn't exist, use the entire parsed object as a string
+        cleanedContent = JSON.stringify(parsed);
+      }
     }
-    return content.trim();
+
+    // Clean up the content (optional, based on your needs)
+    cleanedContent = cleanedContent.replace(/^\s*[-•]\s*/gm, '• ').trim();
+
+    return cleanedContent;
   } catch (e) {
-    return content;
+    console.error('Error parsing message content:', e);
+    // If parsing fails, return the original content
+    return content.trim();
   }
 }
 
@@ -31,16 +50,14 @@ export function ChatArea({ threadId }: ChatAreaProps) {
     currentThread,
     fetchThread,
     sendMessage,
-    loading,
-    isConnected
+    isConnected,
   } = useChat();
 
   const [processedMessages, setProcessedMessages] = useState<Message[]>([]);
-  const [showTyping, setShowTyping] = useState(false);
+  const [showThinking, setShowThinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastProcessedMessageId = useRef<string | null>(null);
   const lastStreamingState = useRef<boolean | null>(null);
-  const sendTimeoutRef = useRef<NodeJS.Timeout>();
   const isInitialMount = useRef(true);
 
   const scrollToBottom = useCallback(() => {
@@ -50,18 +67,18 @@ export function ChatArea({ threadId }: ChatAreaProps) {
   }, []);
 
   // Handle message sending
-  const handleSendMessage = useCallback(async (content: string) => {
-    try {
-      if (sendTimeoutRef.current) {
-        clearTimeout(sendTimeoutRef.current);
+  const handleSendMessage = useCallback(
+    async (content: string) => {
+      try {
+        setShowThinking(true); // Start showing "Aira is thinking..." when user sends a message
+        await sendMessage(content);
+      } catch (error) {
+        setShowThinking(false);
+        throw error;
       }
-      setShowTyping(true);
-      await sendMessage(content);
-    } catch (error) {
-      setShowTyping(false);
-      throw error;
-    }
-  }, [sendMessage]);
+    },
+    [sendMessage]
+  );
 
   // Process messages when they update
   useEffect(() => {
@@ -80,13 +97,26 @@ export function ChatArea({ threadId }: ChatAreaProps) {
     const streamingStateChanged = lastMessage?.isStreaming !== lastStreamingState.current;
 
     if (hasNewMessage || streamingStateChanged) {
-      const processed = currentThread.messages.map(msg => ({
+      // **Sort messages by created_at timestamp**
+      const sortedMessages = [...currentThread.messages].sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+
+      const processed = sortedMessages.map((msg) => ({
         ...msg,
-        content: msg.isStreaming ? msg.content : cleanMessageContent(msg.content)
+        content: getCleanContent(msg.content),
       }));
 
       setProcessedMessages(processed);
-      
+
+      if (lastMessage.isStreaming) {
+        setShowThinking(false); // Stop showing "Aira is thinking..." when streaming starts
+      }
+
+      if (!lastMessage.isStreaming && lastMessage.role === 'agent') {
+        // AI has finished responding
+      }
+
       if (!lastMessage.isStreaming) {
         lastProcessedMessageId.current = lastMessage.id;
       }
@@ -96,62 +126,18 @@ export function ChatArea({ threadId }: ChatAreaProps) {
     }
   }, [currentThread?.messages, scrollToBottom]);
 
-  // Handle typing indicator based on message state and completion
-  useEffect(() => {
-    const lastMessage = currentThread?.messages?.[currentThread.messages.length - 1];
-    
-    // Determine if we should show typing indicator
-    const shouldShowTyping = () => {
-      // Show when loading
-      if (loading) return true;
-      
-      // Show if there's a streaming message
-      if (lastMessage?.isStreaming) return true;
-      
-      // Don't show if we have a completed agent message
-      if (lastMessage?.role === 'agent' && !lastMessage.isStreaming) return false;
-      
-      return false;
-    };
-
-    if (shouldShowTyping()) {
-      setShowTyping(true);
-      if (sendTimeoutRef.current) {
-        clearTimeout(sendTimeoutRef.current);
-        sendTimeoutRef.current = undefined;
-      }
-    } else {
-      // Hide typing indicator with minimal delay
-      if (!sendTimeoutRef.current) {
-        sendTimeoutRef.current = setTimeout(() => {
-          setShowTyping(false);
-          sendTimeoutRef.current = undefined;
-        }, 200);
-      }
-    }
-
-    return () => {
-      if (sendTimeoutRef.current) {
-        clearTimeout(sendTimeoutRef.current);
-      }
-    };
-  }, [loading, currentThread?.messages]);
-
   // Initial thread fetch and cleanup
   useEffect(() => {
     if (threadId) {
       fetchThread(threadId);
     }
-    
+
     return () => {
       setProcessedMessages([]);
       lastProcessedMessageId.current = null;
       lastStreamingState.current = null;
-      setShowTyping(false);
+      setShowThinking(false);
       isInitialMount.current = true;
-      if (sendTimeoutRef.current) {
-        clearTimeout(sendTimeoutRef.current);
-      }
     };
   }, [threadId, fetchThread]);
 
@@ -166,32 +152,30 @@ export function ChatArea({ threadId }: ChatAreaProps) {
   return (
     <div className="flex flex-col h-full bg-white">
       <ThreadHeader thread={currentThread} />
-  
+
       {!isConnected && (
         <Alert className="mx-4 mt-2">
-          <AlertDescription>
-            Connecting to chat server...
-          </AlertDescription>
+          <AlertDescription>Connecting to chat server...</AlertDescription>
         </Alert>
       )}
-  
+
       <div className="flex-1 overflow-hidden">
         <MessageList
           messages={processedMessages}
-          isLoading={showTyping}
+          showThinking={showThinking}
+          threadOwnerId={currentThread.user_id}
+          currentUserId={currentThread.current_user_id}
         />
         <div ref={messagesEndRef} />
       </div>
-  
+
       <div className="border-t p-4">
         <ChatInput
           onSend={handleSendMessage}
-          isLoading={showTyping}  // Changed from disabled prop
-          disabled={!isConnected} // Only disable when not connected
+          isLoading={showThinking}
+          disabled={!isConnected}
           placeholder={
-            !isConnected
-              ? "Connecting to chat..."
-              : "Type your message..."
+            !isConnected ? 'Connecting to chat...' : 'Type your message...'
           }
         />
       </div>
