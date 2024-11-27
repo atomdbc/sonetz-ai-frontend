@@ -55,6 +55,7 @@ export const chatService = {
         ...data,
         userRole: this.getUserRole(data)
       };
+      console.log('Thread data fetched:', data);
     } catch (error) {
       console.error('Error getting thread:', error);
       return null;

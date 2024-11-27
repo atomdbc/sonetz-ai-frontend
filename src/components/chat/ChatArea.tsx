@@ -46,15 +46,11 @@ function getCleanContent(content: string): string {
 }
 
 export function ChatArea({ threadId }: ChatAreaProps) {
-  const {
-    currentThread,
-    fetchThread,
-    sendMessage,
-    isConnected,
-  } = useChat();
+  const { currentThread, fetchThread, sendMessage, isConnected } = useChat();
 
   const [processedMessages, setProcessedMessages] = useState<Message[]>([]);
   const [showThinking, setShowThinking] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastProcessedMessageId = useRef<string | null>(null);
   const lastStreamingState = useRef<boolean | null>(null);
@@ -82,54 +78,63 @@ export function ChatArea({ threadId }: ChatAreaProps) {
 
   // Process messages when they update
   useEffect(() => {
-    if (!currentThread?.messages?.length) {
+    console.log('Current thread:', currentThread);
+
+    if (currentThread && currentThread.messages && currentThread.messages.length > 0) {
+      isInitialMount.current = false;
+
+      const lastMessage = currentThread.messages[currentThread.messages.length - 1];
+      const hasNewMessage = lastMessage?.id !== lastProcessedMessageId.current;
+      const streamingStateChanged = lastMessage?.isStreaming !== lastStreamingState.current;
+
+      if (hasNewMessage || streamingStateChanged) {
+        // Sort messages by created_at timestamp
+        const sortedMessages = [...currentThread.messages].sort(
+          (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+
+        const processed = sortedMessages.map((msg) => ({
+          ...msg,
+          content: getCleanContent(msg.content),
+        }));
+
+        console.log('Processed messages:', processed);
+
+        setProcessedMessages(processed);
+
+        if (lastMessage.isStreaming) {
+          setShowThinking(false); // Stop showing "Aira is thinking..." when streaming starts
+        }
+
+        if (!lastMessage.isStreaming) {
+          lastProcessedMessageId.current = lastMessage.id;
+        }
+        lastStreamingState.current = lastMessage.isStreaming;
+
+        scrollToBottom();
+      }
+    } else {
+      console.log('No messages found in currentThread');
       if (!isInitialMount.current) {
         setProcessedMessages([]);
         lastProcessedMessageId.current = null;
         lastStreamingState.current = null;
       }
-      return;
     }
-
-    isInitialMount.current = false;
-    const lastMessage = currentThread.messages[currentThread.messages.length - 1];
-    const hasNewMessage = lastMessage?.id !== lastProcessedMessageId.current;
-    const streamingStateChanged = lastMessage?.isStreaming !== lastStreamingState.current;
-
-    if (hasNewMessage || streamingStateChanged) {
-      // **Sort messages by created_at timestamp**
-      const sortedMessages = [...currentThread.messages].sort(
-        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      );
-
-      const processed = sortedMessages.map((msg) => ({
-        ...msg,
-        content: getCleanContent(msg.content),
-      }));
-
-      setProcessedMessages(processed);
-
-      if (lastMessage.isStreaming) {
-        setShowThinking(false); // Stop showing "Aira is thinking..." when streaming starts
-      }
-
-      if (!lastMessage.isStreaming && lastMessage.role === 'agent') {
-        // AI has finished responding
-      }
-
-      if (!lastMessage.isStreaming) {
-        lastProcessedMessageId.current = lastMessage.id;
-      }
-      lastStreamingState.current = lastMessage.isStreaming;
-
-      scrollToBottom();
-    }
-  }, [currentThread?.messages, scrollToBottom]);
+  }, [currentThread, scrollToBottom]);
 
   // Initial thread fetch and cleanup
   useEffect(() => {
+    console.log('Fetching thread with ID:', threadId);
     if (threadId) {
-      fetchThread(threadId);
+      fetchThread(threadId)
+        .then(() => {
+          console.log('Thread fetched successfully.');
+        })
+        .catch((err) => {
+          console.error('Error fetching thread:', err);
+          setError(err);
+        });
     }
 
     return () => {
@@ -140,6 +145,14 @@ export function ChatArea({ threadId }: ChatAreaProps) {
       isInitialMount.current = true;
     };
   }, [threadId, fetchThread]);
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-red-500">Error loading messages: {error.message}</p>
+      </div>
+    );
+  }
 
   if (!currentThread) {
     return (
@@ -174,9 +187,7 @@ export function ChatArea({ threadId }: ChatAreaProps) {
           onSend={handleSendMessage}
           isLoading={showThinking}
           disabled={!isConnected}
-          placeholder={
-            !isConnected ? 'Connecting to chat...' : 'Type your message...'
-          }
+          placeholder={!isConnected ? 'Connecting to chat...' : 'Type your message...'}
         />
       </div>
     </div>

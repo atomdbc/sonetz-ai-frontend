@@ -87,39 +87,11 @@ export default function MessageGroup({
     return null;
   };
 
-  const getCleanContent = (message: Message): string => {
-    let content = message.content;
-
-    try {
-      // Check if content is a JSON string
-      if (typeof content === 'string' && content.trim().startsWith('{')) {
-        const parsed = JSON.parse(content);
-
-        // Check if parsed object has a 'content' field
-        if (parsed && typeof parsed.content === 'string') {
-          content = parsed.content;
-        } else if (parsed && typeof parsed.message === 'string') {
-          content = parsed.message;
-        } else {
-          // If 'content' or 'message' field doesn't exist, use the entire parsed object as a string
-          content = JSON.stringify(parsed);
-        }
-      }
-
-      // Clean up the content (optional, based on your needs)
-      content = content.replace(/^\s*[-•]\s*/gm, '• ').trim();
-
-      return content;
-    } catch (e) {
-      console.error('Error parsing message content:', e);
-      // If parsing fails, return the original content
-      return content.trim();
-    }
-  };
+  // Removed getCleanContent function here
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(getCleanContent(message));
+      await navigator.clipboard.writeText(message.content);
       toast({ description: 'Message copied' });
     } catch (error) {
       toast({
@@ -162,8 +134,10 @@ export default function MessageGroup({
     }
   };
 
-  const cleanContent = getCleanContent(message);
-  if (!cleanContent) {
+  const cleanContent = message.content; // Use message.content directly
+
+  // Adjust the condition to check for null or undefined
+  if (cleanContent === null || cleanContent === undefined) {
     return null;
   }
 

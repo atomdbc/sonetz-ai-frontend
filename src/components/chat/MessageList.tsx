@@ -4,7 +4,6 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { Message } from '@/types/message';
-import { Avatar } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import MessageGroup from './MessageGroup';
 
@@ -50,6 +49,14 @@ export default function MessageList({
     }
   }, []);
 
+  if (!messages || messages.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-muted-foreground">
+        No messages yet
+      </div>
+    );
+  }
+
   return (
     <ScrollArea
       ref={scrollRef}
@@ -59,10 +66,11 @@ export default function MessageList({
       <div className="space-y-4 sm:space-y-6 py-4">
         {messages.map((message, i) => (
           <MessageGroup
-            key={message.id}
+            key={message.id || `temp-${i}`}
             message={message}
             isLastInGroup={
-              i === messages.length - 1 || messages[i + 1].role !== message.role
+              i === messages.length - 1 ||
+              messages[i + 1]?.role !== message.role
             }
             isOwner={message.message_metadata?.user_id === threadOwnerId}
             currentUserId={currentUserId}
@@ -70,19 +78,28 @@ export default function MessageList({
           />
         ))}
 
-        {/* Aira is thinking indicator */}
+        {/* Thinking indicator */}
         {showThinking && (
           <div
             ref={lastMessageRef}
             className="flex items-center gap-2 text-xs text-muted-foreground px-4 sm:pl-11"
           >
-            <Avatar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
-              <img src="/aira_avatar.jpg" alt="AI" className="rounded-full" />
-            </Avatar>
+            <div className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0 relative rounded-full overflow-hidden">
+              <img
+                src="/aira_avatar.jpg"
+                alt="AI"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            </div>
             <div className="animate-pulse">Aira is thinking...</div>
           </div>
         )}
       </div>
+
+      {/* Scroll anchor */}
+      <div ref={lastMessageRef} />
     </ScrollArea>
   );
 }

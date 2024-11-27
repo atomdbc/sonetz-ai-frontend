@@ -1,7 +1,5 @@
 // src/types/thread.ts
 
-import { Message } from './message';
-
 export interface ThreadParticipant {
   id: string;
   user_id: string;
@@ -22,7 +20,6 @@ export interface ThreadParticipant {
   last_accessed_at?: string;
 }
 
-
 export interface Thread {
   id: string;
   user_id: string;
@@ -35,10 +32,10 @@ export interface Thread {
     shares?: Record<string, any>;
   };
   participants?: ThreadParticipant[];
-  userRole?: 'owner' | 'contributor' | 'viewer';  // Add this field
+  userRole?: 'owner' | 'contributor' | 'viewer';
   created_at: string;
   updated_at: string;
-  last_message_at?: string;
+  last_message_at?: string; // Ensure consistent naming
 }
 
 export interface ThreadUpdate {
