@@ -1,19 +1,11 @@
 // src/app/share/[threadId]/page.tsx
-'use client';
+// Remove 'use client' from here - this should be a server component
+import SharePageClient from './SharePageClient';
 
-import { ChatProvider } from '@/lib/chat/ChatContext';
-import { SharePageContent } from '@/components/chat/SharePageContent';
+interface PageProps {
+  params: { threadId: string };
+}
 
-
-
-export default function SharePage({ 
-    params 
-  }: { 
-    params: { threadId: string } 
-  }) {
-    return (
-      <ChatProvider>
-        <SharePageContent threadId={params.threadId} />
-      </ChatProvider>
-    );
-  }
+export default function SharePage({ params }: PageProps) {
+  return <SharePageClient threadId={params.threadId} />;
+}
