@@ -9,14 +9,12 @@ export const authService = {
         username: credentials.email,
         password: credentials.password
       };
-      
+
       const response = await apiClient.post<AuthResponse>('/auth/signin', payload);
-      console.log('Sign in response:', response.data); // Debug log
       
-      // Check both possible response structures
-      const tokens = response.data?.data || response.data;
-      if (tokens?.access_token) {
-        TokenService.setTokens(tokens.access_token, tokens.refresh_token);
+      if (response.data?.data) {
+        const { access_token, refresh_token } = response.data.data;
+        TokenService.setTokens(access_token, refresh_token);
       }
       
       return response.data;
@@ -36,15 +34,16 @@ export const authService = {
     }
   },
 
-  async signUp(credentials: SignUpCredentials): Promise<User> {
+  async signUp(credentials: SignUpCredentials): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<User>('/auth/signup', credentials);
+      const response = await apiClient.post<AuthResponse>('/auth/signup', credentials);
       return response.data;
     } catch (error) {
       console.error('Sign up error:', error);
       throw error;
     }
-  },
+  }
+,
 
   async signOut(): Promise<void> {
     try {

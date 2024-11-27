@@ -96,7 +96,7 @@ export default function SignInPage() {
         <div className="absolute inset-0 bg-zinc-900" />
         <div className="relative z-20 flex items-center text-lg font-medium">
           <img src="/globe.svg" alt="Logo" className="h-8 w-8 mr-2" />
-          Aira AI
+          Sonetz AI
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">

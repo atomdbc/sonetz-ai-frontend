@@ -1,4 +1,3 @@
-// src/app/auth/signup/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -16,15 +15,12 @@ import { authService } from '@/services/authService';
 import { Loader2 } from 'lucide-react';
 
 const signUpSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email format'),
-  password: z.string().min(8, 'Password must be at least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 
-      'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password_confirm: z.string()
+}).refine((data) => data.password === data.password_confirm, {
   message: "Passwords don't match",
-  path: ["confirmPassword"],
+  path: ["password_confirm"],
 });
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -37,30 +33,26 @@ export default function SignUpPage() {
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      name: '',
       email: '',
       password: '',
-      confirmPassword: '',
+      password_confirm: '',
     },
+    mode: 'onBlur'
   });
 
   async function onSubmit(data: SignUpFormData) {
     try {
       setIsLoading(true);
-      await authService.signUp({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      });
-
-      toast({
-        title: 'Account created!',
-        description: 'Please sign in with your new account',
-      });
-
-      router.push('/auth/signin');
+      const response = await authService.signUp(data);
+      
+      if (response.status === 'success') {
+        toast({
+          title: 'Account created!',
+          description: 'Please sign in with your new account',
+        });
+        router.push('/auth/signin');
+      }
     } catch (error) {
-      console.error('Sign up error:', error);
       toast({
         title: 'Sign up failed',
         description: error instanceof Error ? error.message : 'Failed to create account',
@@ -103,23 +95,6 @@ export default function SignUpPage() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter your name"
-                            {...field}
-                            disabled={isLoading}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -159,7 +134,7 @@ export default function SignUpPage() {
                   />
                   <FormField
                     control={form.control}
-                    name="confirmPassword"
+                    name="password_confirm"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
@@ -195,6 +170,7 @@ export default function SignUpPage() {
           </Card>
         </div>
       </div>
+
     </div>
   );
 }

@@ -8,7 +8,7 @@
 ├── package.json
 ├── postcss.config.js
 ├── public
-│   ├── aira_avatar.webp
+│   ├── aira_avatar.jpg
 │   ├── file.svg
 │   ├── globe.svg
 │   ├── integrations
@@ -58,7 +58,9 @@
 │   │   │   ├── ChatArea.tsx
 │   │   │   ├── ChatInput.tsx
 │   │   │   ├── ChatLayout.tsx
+│   │   │   ├── MessageGroup.tsx
 │   │   │   ├── MessageList.tsx
+│   │   │   ├── SharePageContent.tsx
 │   │   │   ├── ShareThread.tsx
 │   │   │   ├── ThreadHeader.tsx
 │   │   │   ├── ThreadItem.tsx
@@ -103,7 +105,6 @@
 │   │   ├── chat
 │   │   │   └── ChatContext.tsx
 │   │   └── utils.ts
-│   ├── middleware.ts
 │   ├── providers
 │   │   └── theme-provider.tsx
 │   ├── services
@@ -117,4 +118,4 @@
 ├── tailwind.config.js
 └── tsconfig.json
 
-32 directories, 86 files
+32 directories, 87 files

@@ -6,18 +6,17 @@ export interface SignInCredentials {
 export interface SignUpCredentials {
   email: string;
   password: string;
-  name: string;
+  password_confirm: string;
 }
 
 export interface AuthResponse {
   status: string;
-  message?: string;
-  data?: {
+  data: {
     access_token: string;
     refresh_token: string;
-    user?: User;
-  };
-}
+    token_type: string;
+  }
+ }
 
 export interface User {
   id: string;
