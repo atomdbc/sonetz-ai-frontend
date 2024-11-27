@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { TokenService } from '@/lib/auth/tokenService';
 
-export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost';
-export const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost';
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.sonetz.com';
+export const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'wss://api.sonetz.com';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
