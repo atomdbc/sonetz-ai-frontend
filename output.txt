@@ -53,7 +53,7 @@
 │   │   │   └── page.tsx
 │   │   ├── integrations
 │   │   │   ├── hubspot
-│   │   │   │   └── callback 
+│   │   │   │   └── callback
 │   │   │   │       └── page.tsx
 │   │   │   ├── layout.tsx
 │   │   │   ├── microsoft
@@ -62,9 +62,11 @@
 │   │   │   └── page.tsx
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
-│   │   └── share
-│   │       └── [threadId]
-│   │           └── page.tsx
+│   │   ├── share
+│   │   │   └── [threadId]
+│   │   │       └── page.tsx
+│   │   └── urja-sam
+│   │       └── microsoft-identity-association.json
 │   ├── components
 │   │   ├── auth
 │   │   │   └── ProtectedRoute.tsx
@@ -107,13 +109,15 @@
 │   ├── services
 │   │   ├── authService.ts
 │   │   ├── chatService.ts
+│   │   ├── hubspotService.ts
 │   │   └── microsoftService.ts
 │   └── types
 │       ├── auth.ts
+│       ├── integrations.hubspot.ts
 │       ├── integrations.microsoft.ts
 │       ├── message.ts
 │       └── thread.ts
 ├── tailwind.config.js
 └── tsconfig.json
 
-42 directories, 75 files
+43 directories, 78 files
