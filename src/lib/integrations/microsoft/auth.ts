@@ -23,6 +23,8 @@ export class MicrosoftAuthClient {
       ]
     };
   }
+  
+  
 
   getAuthUrl(): string {
     const params = new URLSearchParams({
