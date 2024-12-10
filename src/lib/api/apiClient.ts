@@ -16,13 +16,11 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(async (config) => {
   const token = TokenService.getAccessToken();
   console.log('Request URL:', config.url);
-  console.log('Current token:', token);
   
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   
-  console.log('Final headers:', config.headers);
   return config;
 });
 

@@ -28,9 +28,7 @@ export const TokenService = {
     const cookieToken = getCookie('access_token');
     const localToken = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     
-    console.log('Getting access token - Cookie:', cookieToken);
-    console.log('Getting access token - LocalStorage:', localToken);
-    
+
     return cookieToken || localToken;
   },
 

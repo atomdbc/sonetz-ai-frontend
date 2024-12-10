@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/msal-node": "^2.16.2",
     "@fontsource-variable/inter": "^5.1.0",
     "@fontsource/inter": "^5.1.0",
     "@fontsource/jetbrains-mono": "^5.1.1",
     "@hookform/resolvers": "^3.9.1",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
@@ -27,7 +29,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.7",
-    "class-variance-authority": "^0.7.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookies-next": "^5.0.2",
     "date-fns": "^4.1.0",
