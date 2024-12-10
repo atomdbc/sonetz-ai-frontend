@@ -13,6 +13,7 @@
 │   ├── globe.svg
 │   ├── integrations
 │   │   ├── hubspot.png
+│   │   ├── microsoft.png
 │   │   └── salesforce.png
 │   ├── next.svg
 │   ├── user_avatar.webp
@@ -20,13 +21,16 @@
 │   └── window.svg
 ├── src
 │   ├── app
+│   │   ├── ai-policy
+│   │   │   └── page.tsx
 │   │   ├── api
-│   │   │   ├── external
 │   │   │   └── integrations
-│   │   │       ├── auth
-│   │   │       │   └── route.ts
-│   │   │       └── callback
-│   │   │           └── route.ts
+│   │   │       ├── hubspot
+│   │   │       │   └── token
+│   │   │       │       └── route.ts
+│   │   │       └── microsoft
+│   │   │           └── token
+│   │   │               └── route.ts
 │   │   ├── auth
 │   │   │   ├── signin
 │   │   │   │   └── page.tsx
@@ -39,12 +43,22 @@
 │   │   │   ├── output.txt
 │   │   │   └── page.tsx
 │   │   ├── favicon.ico
+│   │   ├── feedback
+│   │   │   └── page.tsx
 │   │   ├── fonts
 │   │   │   ├── GeistMonoVF.woff
 │   │   │   └── GeistVF.woff
 │   │   ├── globals.css
+│   │   ├── help-center
+│   │   │   └── page.tsx
 │   │   ├── integrations
+│   │   │   ├── hubspot
+│   │   │   │   └── callback 
+│   │   │   │       └── page.tsx
 │   │   │   ├── layout.tsx
+│   │   │   ├── microsoft
+│   │   │   │   └── callback
+│   │   │   │       └── page.tsx
 │   │   │   └── page.tsx
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
@@ -66,31 +80,8 @@
 │   │   │   ├── ThreadItem.tsx
 │   │   │   ├── ThreadsList.tsx
 │   │   │   └── WelcomeScreen.tsx
-│   │   ├── integrations
-│   │   │   ├── integration-card.tsx
-│   │   │   └── integrations-data.ts
-│   │   └── ui
-│   │       ├── alert.tsx
-│   │       ├── avatar.tsx
-│   │       ├── badge.tsx
-│   │       ├── button.tsx
-│   │       ├── card.tsx
-│   │       ├── dialog.tsx
-│   │       ├── dropdown-menu.tsx
-│   │       ├── form.tsx
-│   │       ├── input.tsx
-│   │       ├── label.tsx
-│   │       ├── markdown.tsx
-│   │       ├── scroll-area.tsx
-│   │       ├── select.tsx
-│   │       ├── separator.tsx
-│   │       ├── sheet.tsx
-│   │       ├── skeleton.tsx
-│   │       ├── tabs.tsx
-│   │       ├── textarea.tsx
-│   │       ├── toast.tsx
-│   │       ├── toaster.tsx
-│   │       └── tooltip.tsx
+│   │   └── integrations
+│   │       └── IntegrationCard.tsx
 │   ├── hooks
 │   │   ├── use-thread.ts
 │   │   ├── use-toast.ts
@@ -104,18 +95,25 @@
 │   │   │   └── tokenService.ts
 │   │   ├── chat
 │   │   │   └── ChatContext.tsx
+│   │   ├── integrations
+│   │   │   ├── hubspot
+│   │   │   │   └── auth.ts
+│   │   │   ├── microsoft
+│   │   │   │   └── auth.ts
+│   │   │   └── types.ts
 │   │   └── utils.ts
 │   ├── providers
 │   │   └── theme-provider.tsx
 │   ├── services
 │   │   ├── authService.ts
 │   │   ├── chatService.ts
-│   │   └── integrationService.ts
+│   │   └── microsoftService.ts
 │   └── types
 │       ├── auth.ts
+│       ├── integrations.microsoft.ts
 │       ├── message.ts
 │       └── thread.ts
 ├── tailwind.config.js
 └── tsconfig.json
 
-32 directories, 87 files
+42 directories, 75 files
